@@ -1,9 +1,22 @@
-import { useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import emailjs from "@emailjs/browser";
 
 export default function Contact() {
   const [status, setStatus] = useState({ type: "", msg: "" });
   const [loading, setLoading] = useState(false);
+  const formRef = useRef(null);
+
+  // Optional: prefill hidden fields (helps multi-site + analytics)
+  useEffect(() => {
+    if (!formRef.current) return;
+    const form = formRef.current;
+
+    const siteName = form.querySelector('input[name="site_name"]');
+    const pageUrl = form.querySelector('input[name="page_url"]');
+
+    if (siteName) siteName.value = import.meta.env.VITE_SITE_NAME || "Website";
+    if (pageUrl) pageUrl.value = window.location.href;
+  }, []);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -11,6 +24,15 @@ export default function Contact() {
     setLoading(true);
 
     const form = e.currentTarget;
+
+    // Honeypot: if filled, quietly "succeed" but do nothing
+    const trap = form.querySelector('input[name="website"]')?.value;
+    if (trap) {
+      setLoading(false);
+      setStatus({ type: "success", msg: "Message sent! I’ll get back to you shortly." });
+      form.reset();
+      return;
+    }
 
     try {
       await emailjs.sendForm(
@@ -26,7 +48,7 @@ export default function Contact() {
       console.error(err);
       setStatus({
         type: "error",
-        msg: "Something went wrong sending your message. Please email me directly.",
+        msg: "Something went wrong sending your message. Please email me directly at bob@greerwebdesigns.com.",
       });
     } finally {
       setLoading(false);
@@ -53,9 +75,7 @@ export default function Contact() {
           {/* Left: Contact details */}
           <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-900">Get in touch</h2>
-            <p className="mt-2 text-slate-600">
-              Prefer to reach out directly? Here you go:
-            </p>
+            <p className="mt-2 text-slate-600">Prefer to reach out directly? Here you go:</p>
 
             <div className="mt-6 space-y-4">
               <div className="rounded-xl bg-slate-50 p-4">
@@ -88,19 +108,28 @@ export default function Contact() {
           {/* Right: Form */}
           <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-900">Send a message</h2>
-            <p className="mt-2 text-slate-600">
-              Fill this out and it’ll go straight to my inbox.
-            </p>
+            <p className="mt-2 text-slate-600">Fill this out and it’ll go straight to my inbox.</p>
 
-            <form className="mt-6 space-y-4" onSubmit={onSubmit}>
-              {/* These "name" attributes map to EmailJS template vars */}
+            <form ref={formRef} className="mt-6 space-y-4" onSubmit={onSubmit}>
+              {/* Hidden fields for template context */}
+              <input type="hidden" name="site_name" />
+              <input type="hidden" name="page_url" />
+
+              {/* Honeypot trap (bots fill this) */}
+              <div className="hidden" aria-hidden="true">
+                <label>
+                  Website
+                  <input name="website" tabIndex={-1} autoComplete="off" />
+                </label>
+              </div>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="text-sm font-medium text-slate-700">First name</label>
                   <input
                     name="first_name"
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                     placeholder="Bob"
                   />
                 </div>
@@ -110,7 +139,7 @@ export default function Contact() {
                   <input
                     name="last_name"
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                     placeholder="Ducharme"
                   />
                 </div>
@@ -120,7 +149,7 @@ export default function Contact() {
                 <label className="text-sm font-medium text-slate-700">Company (optional)</label>
                 <input
                   name="company"
-                  className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                   placeholder="Your company name"
                 />
               </div>
@@ -132,7 +161,7 @@ export default function Contact() {
                     type="email"
                     name="reply_to"
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                     placeholder="you@company.com"
                   />
                 </div>
@@ -141,7 +170,7 @@ export default function Contact() {
                   <label className="text-sm font-medium text-slate-700">Phone (optional)</label>
                   <input
                     name="phone"
-                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                    className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                     placeholder="(864) 555-1234"
                   />
                 </div>
@@ -151,7 +180,7 @@ export default function Contact() {
                 <label className="text-sm font-medium text-slate-700">What do you need built?</label>
                 <select
                   name="service"
-                  className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                   defaultValue="Website"
                 >
                   <option>Website</option>
@@ -166,12 +195,11 @@ export default function Contact() {
                   name="message"
                   required
                   rows={6}
-                  className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-teal-200"
+                  className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
                   placeholder="Tell me about your business, the services you offer, and what you want the website to accomplish..."
                 />
               </div>
 
-              {/* Status */}
               {status.msg && (
                 <div
                   className={[
@@ -188,7 +216,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-full bg-gradient-to-r from-teal-500 to-green-500 px-8 py-4 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-60"
+                className="w-full rounded-xl bg-linear-to-r from-blue-500 to-blue-600 px-8 py-4 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-60 min-h-[48px]"
               >
                 {loading ? "Sending..." : "Send Message"}
               </button>
