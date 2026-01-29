@@ -219,7 +219,7 @@ console.log("PUBLIC KEY:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
                 disabled={loading}
                 className="w-full rounded-xl bg-linear-to-r from-blue-500 to-blue-600 px-8 py-4 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-60 min-h-[48px]"
               >
-                {loading ? "Sending...." : "Send Message"}
+                {loading ? "Sending..." : "Send Message"}
               </button>
 
               <p className="text-xs text-slate-500 text-center">
