@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Greer Web Designs Brand Theme */
+:root {
+  /* Core brand */
+  --brand-navy: #2f3e66;
+  --brand-blue: #1f8acb;
+  --brand-blue-dark: #0b5fa8;
+  --brand-green: #63a843;
+  --brand-green-light: #8bcf6a;
+
+  /* UI */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+
+  /* Effects */
+  --ring: rgba(31, 138, 203, 0.35);
+}
+
+/* Modern agency polish */
+::selection {
+  background: rgba(31, 138, 203, 0.25);
+}
+
+html, body {
+  background-color: #f6f7f9; /* slate-50 */
+  overflow-x: hidden;
+}
