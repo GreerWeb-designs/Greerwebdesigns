@@ -6,6 +6,8 @@ import Home from "./routes/home";
 import Pricing from "./routes/pricing";
 import Portfolio from "./routes/portfolio";
 import Contact from "./routes/contact";
+import Websites from "./routes/contractor-websites";
+import Seo from "./routes/seo-for-contractors";
 
 export default function App() {
   return (
