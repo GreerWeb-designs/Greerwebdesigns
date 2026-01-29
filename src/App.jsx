@@ -23,6 +23,8 @@ export default function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/contractor-websites" element={<Websites />} />
+          <Route path="/seo-for-contractors" element={<Seo />} />
         </Routes>
       </main>
 
