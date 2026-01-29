@@ -33,6 +33,7 @@ export default function Contact() {
       form.reset();
       return;
     }
+console.log("PUBLIC KEY:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
 
     try {
       await emailjs.sendForm(
@@ -130,7 +131,7 @@ export default function Contact() {
                     name="first_name"
                     required
                     className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
-                    placeholder="Bob"
+                    placeholder="First Name"
                   />
                 </div>
 
@@ -140,7 +141,7 @@ export default function Contact() {
                     name="last_name"
                     required
                     className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
-                    placeholder="Ducharme"
+                    placeholder="Last Name"
                   />
                 </div>
               </div>
@@ -171,7 +172,7 @@ export default function Contact() {
                   <input
                     name="phone"
                     className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
-                    placeholder="(864) 555-1234"
+                    placeholder="(xxx) xxx-xxxx"
                   />
                 </div>
               </div>
