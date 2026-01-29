@@ -65,7 +65,7 @@ console.log("PUBLIC KEY:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
             Contact Greer Web Designs
           </h1>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl">
-            Tell me what you need built and I’ll reply with next steps, timeline, and pricing.
+            Tell me what you need and I’ll reply with next steps, timeline, and pricing.
           </p>
         </div>
       </section>
