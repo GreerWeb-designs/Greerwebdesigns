@@ -14,6 +14,7 @@ import SeoForContractors from "./routes/seo-for-contractors";
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
       <Navbar />
 
       {/* Spacer for fixed navbar height (prevents jump / overlap) */}
