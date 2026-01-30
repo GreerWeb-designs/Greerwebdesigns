@@ -5,7 +5,7 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
 
-  // Optional: prefill hidden fields (helps multi-site + analytics)
+  // Prefill hidden fields (helps multi-site + analytics)
   useEffect(() => {
     if (!formRef.current) return;
     const form = formRef.current;
@@ -24,41 +24,65 @@ export default function Contact() {
 
     const form = e.currentTarget;
 
-    // Honeypot: if filled, quietly "succeed" but do nothing
+    // Honeypot (bots fill this) — treat as success but do nothing
     const trap = form.querySelector('input[name="website"]')?.value;
     if (trap) {
       setLoading(false);
-      setStatus({ type: "success", msg: "Message sent! I’ll get back to you shortly." });
+      setStatus({
+        type: "success",
+        msg: "Message sent! I’ll get back to you shortly.",
+      });
       form.reset();
       return;
     }
-console.log("PUBLIC KEY:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
-console.log("SERVICE:", import.meta.env.VITE_EMAILJS_SERVICE_ID);
-console.log("TEMPLATE:", import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
 
-   const payload = {
-  first_name: form.first_name.value,
-  last_name: form.last_name.value,
-  company: form.company.value,
-  reply_to: form.reply_to.value,
-  phone: form.phone.value,
-  service: form.service.value,
-  message: form.message.value,
-  site_name: form.site_name.value || import.meta.env.VITE_SITE_NAME || "Website",
-  page_url: form.page_url.value || window.location.href,
-  website: form.website.value, // honeypot
-};
+    const payload = {
+      first_name: form.first_name?.value?.trim() || "",
+      last_name: form.last_name?.value?.trim() || "",
+      company: form.company?.value?.trim() || "",
+      reply_to: form.reply_to?.value?.trim() || "",
+      phone: form.phone?.value?.trim() || "",
+      service: form.service?.value || "Website",
+      message: form.message?.value?.trim() || "",
+      site_name:
+        form.site_name?.value ||
+        import.meta.env.VITE_SITE_NAME ||
+        "Website",
+      page_url: form.page_url?.value || window.location.href,
+      website: form.website?.value || "",
+    };
 
-const res = await fetch(import.meta.env.VITE_CONTACT_ENDPOINT, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload),
-});
+    try {
+      const endpoint =
+        import.meta.env.VITE_CONTACT_ENDPOINT ||
+        "https://gwd-contact-api.bob-31b.workers.dev";
 
-if (!res.ok) {
-  const txt = await res.text();
-  throw new Error(txt);
-}
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || "Request failed");
+      }
+
+      form.reset();
+      setStatus({
+        type: "success",
+        msg: "Message sent! I’ll get back to you shortly.",
+      });
+    } catch (err) {
+      console.error("Contact form send error:", err);
+      setStatus({
+        type: "error",
+        msg: "Something went wrong sending your message. Please email me directly at bob@greerwebdesigns.com.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="w-full">
@@ -69,7 +93,8 @@ if (!res.ok) {
             Contact Greer Web Designs
           </h1>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl">
-            Tell me what you need and I’ll reply with next steps, timeline, and pricing.
+            Tell me what you need and I’ll reply with next steps, timeline, and
+            pricing.
           </p>
         </div>
       </section>
@@ -80,7 +105,9 @@ if (!res.ok) {
           {/* Left: Contact details */}
           <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-900">Get in touch</h2>
-            <p className="mt-2 text-slate-600">Prefer to reach out directly? Here you go:</p>
+            <p className="mt-2 text-slate-600">
+              Prefer to reach out directly? Here you go:
+            </p>
 
             <div className="mt-6 space-y-4">
               <div className="rounded-xl bg-slate-50 p-4">
@@ -105,7 +132,9 @@ if (!res.ok) {
             </div>
 
             <div className="mt-8 rounded-xl border border-slate-200 p-5">
-              <div className="font-semibold text-slate-900">Typical response time</div>
+              <div className="font-semibold text-slate-900">
+                Typical response time
+              </div>
               <p className="mt-1 text-slate-600">Same day or within 24 hours.</p>
             </div>
           </div>
@@ -113,14 +142,16 @@ if (!res.ok) {
           {/* Right: Form */}
           <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-900">Send a message</h2>
-            <p className="mt-2 text-slate-600">Fill this out and it’ll go straight to my inbox.</p>
+            <p className="mt-2 text-slate-600">
+              Fill this out and it’ll go straight to my inbox.
+            </p>
 
             <form ref={formRef} className="mt-6 space-y-4" onSubmit={onSubmit}>
-              {/* Hidden fields for template context */}
+              {/* Hidden fields for context */}
               <input type="hidden" name="site_name" />
               <input type="hidden" name="page_url" />
 
-              {/* Honeypot trap (bots fill this) */}
+              {/* Honeypot trap */}
               <div className="hidden" aria-hidden="true">
                 <label>
                   Website
@@ -130,7 +161,9 @@ if (!res.ok) {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="text-sm font-medium text-slate-700">First name</label>
+                  <label className="text-sm font-medium text-slate-700">
+                    First name
+                  </label>
                   <input
                     name="first_name"
                     required
@@ -140,7 +173,9 @@ if (!res.ok) {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700">Last name</label>
+                  <label className="text-sm font-medium text-slate-700">
+                    Last name
+                  </label>
                   <input
                     name="last_name"
                     required
@@ -151,7 +186,9 @@ if (!res.ok) {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">Company (optional)</label>
+                <label className="text-sm font-medium text-slate-700">
+                  Company (optional)
+                </label>
                 <input
                   name="company"
                   className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
@@ -161,7 +198,9 @@ if (!res.ok) {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="text-sm font-medium text-slate-700">Email</label>
+                  <label className="text-sm font-medium text-slate-700">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="reply_to"
@@ -172,7 +211,9 @@ if (!res.ok) {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700">Phone (optional)</label>
+                  <label className="text-sm font-medium text-slate-700">
+                    Phone (optional)
+                  </label>
                   <input
                     name="phone"
                     className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
@@ -182,7 +223,9 @@ if (!res.ok) {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">What do you need built?</label>
+                <label className="text-sm font-medium text-slate-700">
+                  What do you need built?
+                </label>
                 <select
                   name="service"
                   className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-4 focus:ring-blue-200"
@@ -195,7 +238,9 @@ if (!res.ok) {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">Message</label>
+                <label className="text-sm font-medium text-slate-700">
+                  Message
+                </label>
                 <textarea
                   name="message"
                   required
@@ -205,6 +250,7 @@ if (!res.ok) {
                 />
               </div>
 
+              {/* Status */}
               {status.msg && (
                 <div
                   className={[
