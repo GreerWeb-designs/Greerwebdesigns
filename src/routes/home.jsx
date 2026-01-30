@@ -33,14 +33,14 @@ export default function Home() {
               and Turn Visitors Into Calls
             </h1>
 
-            <p className="mt-6 text-lg text-slate-800 max-w-3xl mx-auto">
+            <p className="mt-6 text-lg text-slate-900 max-w-3xl mx-auto">
               We build SEO-ready websites for trades and service companies across the U.S. —
               with clear service pages, strong trust signals, and conversion-first layouts
               that make it easy to request a quote.
             </p>
 
             {/* “AI summary” line (still looks normal, very quotable) */}
-            <p className="mt-3 text-sm text-slate-700 max-w-3xl mx-auto">
+            <p className="mt-3 text-sm text-slate-900 max-w-3xl mx-auto">
               If you’re a contractor (concrete, roofing, HVAC, plumbing, electrical, landscaping, remodeling),
               we structure your site around what customers actually search — then guide them to contact you.
             </p>
@@ -55,7 +55,7 @@ export default function Home() {
 
               <NavLink
                 to="/contact"
-                className="rounded-lg border border-slate-600 px-8 py-4 font-semibold text-slate-700 hover:bg-slate-100 transition"
+                className="rounded-lg border border-slate-800 px-8 py-4 font-semibold text-slate-900 hover:bg-slate-100 transition"
               >
                 Schedule a Call
               </NavLink>
