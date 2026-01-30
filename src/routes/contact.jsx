@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import emailjs from "@emailjs/browser";
 
 export default function Contact() {
   const [status, setStatus] = useState({ type: "", msg: "" });
@@ -37,26 +36,29 @@ console.log("PUBLIC KEY:", import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
 console.log("SERVICE:", import.meta.env.VITE_EMAILJS_SERVICE_ID);
 console.log("TEMPLATE:", import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
 
-    try {
-      await emailjs.sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        form,
-        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY }
-      );
+   const payload = {
+  first_name: form.first_name.value,
+  last_name: form.last_name.value,
+  company: form.company.value,
+  reply_to: form.reply_to.value,
+  phone: form.phone.value,
+  service: form.service.value,
+  message: form.message.value,
+  site_name: form.site_name.value || import.meta.env.VITE_SITE_NAME || "Website",
+  page_url: form.page_url.value || window.location.href,
+  website: form.website.value, // honeypot
+};
 
-      form.reset();
-      setStatus({ type: "success", msg: "Message sent! I’ll get back to you shortly." });
-    } catch (err) {
-      console.error(err);
-      setStatus({
-        type: "error",
-        msg: "Something went wrong sending your message. Please email me directly at bob@greerwebdesigns.com.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
+const res = await fetch(import.meta.env.VITE_CONTACT_ENDPOINT, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload),
+});
+
+if (!res.ok) {
+  const txt = await res.text();
+  throw new Error(txt);
+}
 
   return (
     <div className="w-full">
