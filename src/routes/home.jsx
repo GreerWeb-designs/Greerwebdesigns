@@ -33,7 +33,7 @@ export default function Home() {
               and Turn Visitors Into Calls
             </h1>
 
-            <p className="mt-6 text-lg text-slate-900 max-w-3xl mx-auto">
+            <p className="mt-6 text-lg text-black max-w-3xl mx-auto">
               We build SEO-ready websites for trades and service companies across the U.S. —
               with clear service pages, strong trust signals, and conversion-first layouts
               that make it easy to request a quote.
